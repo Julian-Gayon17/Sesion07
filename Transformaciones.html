@@ -36,6 +36,7 @@
 		var clearKey = false;
 		var homeKey = false;
 		var endKey = false;
+		var eje; //Hay que crear una varible eje
 		var object, transf = 'T';
 		init();
 		animate();
@@ -186,28 +187,34 @@
         var dtime = Date.now()-startTime;
 		var tx=0, ty=0, tz=0;
 		var escala = 1;
-		const angulo; // Creo una constante para el angulo que en todos los casos inicializara en 0 ****
+		const angulo = 0; // Creo una constante para el angulo que en todos los casos inicializara en 0 ****
 
 		if(transf == 'E') {
 			tx=1; ty=1; tz=1;
 		}
 		if(upArrow) {
-			ty = (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
+			ty = (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0); //Se aplica nombre al eje segun la tecla que vaya a presionar
+			eje = "y";
 		}
 		if(downArrow) {
 			ty = (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0);
+			eje = "y";
 		}
 		if(leftArrow) {
 			tx= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
+			eje = "x";
 		}
 		if(rightArrow) {
 			tx= (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0) ;
+			eje = "x";
 		}
 		if(homeKey) {
 			tz= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
+			eje = "z";
 		}
 		if(endKey) {
 			tz=(transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0);
+			eje = "z";
 		}
 		if(clearKey) {
 			tx=-object.position.x;
@@ -240,22 +247,31 @@
 					0, 0, tz, 0,
 					0, 0, 0, 1);
 
-		if (transf == 'R') // Para hacer la rotacion se tiene que aplicar cada una de las matrices por cada uno de los ejes ****
-			t.set( 	1,            0,             0, 0, 
-					0, Math.cos(tx), -Math.sin(tx), 0,   //PARA X
-					0, Math.sin(tx),  Math.cos(tx), 0,
-					0,            0,             0, 1);
+		if (transf == 'R') 	// Para hacer la rotacion se tiene que aplicar cada una de las matrices por cada uno de los ejes ****
+							// Hago un switch para que rote respecto a un eje
+			switch(eje){
+				case "x":
+					t.set( 	1,            0,             0, 0, 
+							0, Math.cos(tx), -Math.sin(tx), 0,   //PARA X
+							0, Math.sin(tx),  Math.cos(tx), 0,
+							0,            0,             0, 1);
+				break;
 
-			t.set( 	 Math.cos(ty), 0, Math.sin(ty), 0,
-								0, 1,            0, 0,  //PARA Y
-					-Math.sin(ty), 0, Math.cos(ty), 0,
-								0, 0,            0, 1);
+				case "y":
+					t.set( 	 Math.cos(ty), 0, Math.sin(ty), 0,
+										0, 1,            0, 0,  //PARA Y
+							-Math.sin(ty), 0, Math.cos(ty), 0,
+										0, 0,            0, 1);
+				break;
 
-			t.set(	Math.cos(tz), -Math.sin(tz), 0, 0,
-					Math.sin(tz),  Math.cos(tz), 0, 0,  //PARA Z
-							   0, 		      0, 1, 0,
-							   0,             0, 0, 1);
-
+				case "z":
+					t.set(	Math.cos(tz), -Math.sin(tz), 0, 0,
+							Math.sin(tz),  Math.cos(tz), 0, 0,  //PARA Z
+									0, 		          0, 1, 0,
+									0,                0, 0, 1);
+				break;
+			}
+	
 		object.applyMatrix(t);				//Aplicar la matriz de transformación al objeto				
 		object.elementsNeedUpdate = true;	//Avisar que la matriz del objeto ha cambiado
         camera.lookAt( 0, 0, 0 );
