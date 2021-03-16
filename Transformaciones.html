@@ -187,7 +187,8 @@
         var dtime = Date.now()-startTime;
 		var tx=0, ty=0, tz=0;
 		var escala = 1;
-		const angulo = 0; // Creo una constante para el angulo que en todos los casos inicializara en 0 ****
+		const angulo = ( 3 * Math.PI)/180; // Creo una constante para el angulo que en todos los casos inicializara en 0 ****
+										   // Al estar en 0 rota muy rapido, asi que rotara en 3 grados
 
 		if(transf == 'E') {
 			tx=1; ty=1; tz=1;
@@ -197,11 +198,11 @@
 			eje = "y";
 		}
 		if(downArrow) {
-			ty = (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0);
+			ty = (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? -angulo : 0);
 			eje = "y";
 		}
 		if(leftArrow) {
-			tx= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
+			tx= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? -angulo : 0);
 			eje = "x";
 		}
 		if(rightArrow) {
@@ -213,7 +214,7 @@
 			eje = "z";
 		}
 		if(endKey) {
-			tz=(transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0);
+			tz=(transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? -angulo : 0);
 			eje = "z";
 		}
 		if(clearKey) {
