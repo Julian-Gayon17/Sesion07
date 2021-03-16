@@ -53,10 +53,10 @@
 			//Códigos de teclado: http://keycode.info 
 			var onKeyDown = function ( event ) {
 				switch ( event.keyCode ) {
-					case 83: // DISMINUYE LA ESCALA UNIFORMEMENTE
+					case 83: // DISMINUYE LA ESCALA UNIFORMEMENTE ****
 						sKey = true;
 						break;
-					case 87: //AUMENTA LA ESCALA UNIFORMEMENTE
+					case 87: //AUMENTA LA ESCALA UNIFORMEMENTE ****
 						wKey = true;
 						break;
 					case 35: // 
@@ -186,40 +186,41 @@
         var dtime = Date.now()-startTime;
 		var tx=0, ty=0, tz=0;
 		var escala = 1;
+		const angulo; // Creo una constante para el angulo que en todos los casos inicializara en 0 ****
 
 		if(transf == 'E') {
 			tx=1; ty=1; tz=1;
 		}
 		if(upArrow) {
-			ty = (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? 1 : 0);
+			ty = (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
 		}
 		if(downArrow) {
-			ty = (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? 1 : 0);
+			ty = (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0);
 		}
 		if(leftArrow) {
-			tx= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? 1 : 0);
+			tx= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
 		}
 		if(rightArrow) {
-			tx= (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? 1 : 0) ;
+			tx= (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0) ;
 		}
 		if(homeKey) {
-			tz= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? 1 : 0);
+			tz= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? angulo : 0);
 		}
 		if(endKey) {
-			tz=(transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? 1 : 0);
+			tz=(transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? angulo : 0);
 		}
 		if(clearKey) {
 			tx=-object.position.x;
 			ty=-object.position.y;
 			tz=-object.position.z;
 		}
-		if(wKey) { //AUMENTA X,Y,Z AL MISMO TIEMPO
+		if(wKey) { //AUMENTA X,Y,Z AL MISMO TIEMPO ****
 			ty = (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? 1 : 0);
 			tx= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? 1 : 0);
 			tz= (transf == 'T' ? 1 : transf == 'E' ? 1.1 : transf == 'R' ? 1 : 0);
 		}
 
-		if(sKey) { //DISMINUYE X,Y,Z AL MISMO TIEMPO
+		if(sKey) { //DISMINUYE X,Y,Z AL MISMO TIEMPO ****
 			ty = (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? 1 : 0);
 			tx= (transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? 1 : 0) ;
 			tz=(transf == 'T' ? -1 : transf == 'E' ? 10/11 : transf == 'R' ? 1 : 0);
@@ -239,16 +240,27 @@
 					0, 0, tz, 0,
 					0, 0, 0, 1);
 
-		if (transf == 'R')
-			t.set( 	1, 0, 0, tx,
-					0, 1, 0, ty, 
-					0, 0, 1, tz,
-					0, 0, 0, 1	);
+		if (transf == 'R') // Para hacer la rotacion se tiene que aplicar cada una de las matrices por cada uno de los ejes ****
+			t.set( 	1,            0,             0, 0, 
+					0, Math.cos(tx), -Math.sin(tx), 0,   //PARA X
+					0, Math.sin(tx),  Math.cos(tx), 0,
+					0,            0,             0, 1);
+
+			t.set( 	 Math.cos(ty), 0, Math.sin(ty), 0,
+								0, 1,            0, 0,  //PARA Y
+					-Math.sin(ty), 0, Math.cos(ty), 0,
+								0, 0,            0, 1);
+
+			t.set(	Math.cos(tz), -Math.sin(tz), 0, 0,
+					Math.sin(tz),  Math.cos(tz), 0, 0,  //PARA Z
+							   0, 		      0, 1, 0,
+							   0,             0, 0, 1);
 
 		object.applyMatrix(t);				//Aplicar la matriz de transformación al objeto				
 		object.elementsNeedUpdate = true;	//Avisar que la matriz del objeto ha cambiado
         camera.lookAt( 0, 0, 0 );
         renderer.render( scene, camera );
+
     }
     </script>
   </body>
